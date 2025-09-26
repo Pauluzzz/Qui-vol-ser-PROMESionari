@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qui vol ser PROMESionari?</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -111,14 +112,12 @@
 <body>
   <h1>✨ Qui vol ser PROMESionari? ✨</h1>
 
-  <!-- Botons comodins -->
   <div class="lifelines">
     <button class="lifeline" style="background-image: url('images/5050.png');" data-img="images/5050.png" data-text="50/50: Elimina dues opcions incorrectes" title="50/50"></button>
     <button class="lifeline" style="background-image: url('images/public.png');" data-img="images/public.png" data-text="Ajuda del públic: El públic t’ajuda a triar" title="Ajuda del públic"></button>
     <button class="lifeline" style="background-image: url('images/call.png');" data-img="images/call.png" data-text="Trucar a algú: Demana ajuda a un amic" title="Trucar a algú"></button>
   </div>
 
-  <!-- Pregunta -->
   <div class="container">
     <h2>Quin color és el tradicional del vestit de núvia a la major part del món occidental?</h2>
     <div class="option" data-correct="false">A) Vermell</div>
@@ -128,7 +127,6 @@
     <div id="result"></div>
   </div>
 
-  <!-- Overlay -->
   <div id="overlay">
     <img id="overlayImg" src="" alt="Comodí">
     <p id="overlayText"></p>
@@ -141,28 +139,6 @@
     const overlayImg = document.getElementById('overlayImg');
     const overlayText = document.getElementById('overlayText');
 
-    // Llista de sons aleatoris per respostes correctes
-    const correctSounds = [
-      'sound/win1.mp3',
-      'sound/win2.mp3',
-      'sound/win3.mp3'
-    ];
-
-    // Funció per obtenir un so aleatori
-    function getRandomSound() {
-      const randomIndex = Math.floor(Math.random() * correctSounds.length);
-      return correctSounds[randomIndex];
-    }
-
-    // Funció per llançar confeti
-    function launchConfetti() {
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-    }
-
     // Funció per contestar pregunta
     options.forEach(opt => {
       opt.addEventListener('click', () => checkAnswer(opt, opt.dataset.correct === 'true'));
@@ -174,13 +150,17 @@
         element.classList.add('correct');
         document.getElementById('result').innerText = "✅ Correcte!";
         
-        // Llançar confeti
-        launchConfetti();
-        
-        // Reproduir so aleatori
-        const randomSound = getRandomSound();
-        let audio = new Audio(randomSound);
+        // ✨ MODIFICACIÓ 1: Llançar confeti ✨
+        confetti({
+            particleCount: 150,
+            spread: 180
+        });
+
+        // ✨ MODIFICACIÓ 2: Reproduir un so de victòria aleatori ✨
+        const randomSoundIndex = Math.floor(Math.random() * 4) + 1; // Genera un número de l'1 al 4
+        let audio = new Audio(`sound/win${randomSoundIndex}.mp3`);
         audio.play();
+
       } else {
         element.classList.add('wrong');
         document.getElementById('result').innerText = "❌ Incorrecte!";
@@ -188,7 +168,6 @@
         audio.play();
       }
     }
-
 
     // Funció per mostrar overlay de comodí
     lifelines.forEach(btn => {
@@ -220,6 +199,9 @@
         btn.style.opacity = 0.5;
       });
     });
+  </script>
+</body>
+</html>
   </script>
 </body>
 </html>
