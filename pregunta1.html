@@ -141,6 +141,28 @@
     const overlayImg = document.getElementById('overlayImg');
     const overlayText = document.getElementById('overlayText');
 
+    // Llista de sons aleatoris per respostes correctes
+    const correctSounds = [
+      'sound/win1.mp3',
+      'sound/win2.mp3',
+      'sound/win3.mp3'
+    ];
+
+    // Funció per obtenir un so aleatori
+    function getRandomSound() {
+      const randomIndex = Math.floor(Math.random() * correctSounds.length);
+      return correctSounds[randomIndex];
+    }
+
+    // Funció per llançar confeti
+    function launchConfetti() {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+
     // Funció per contestar pregunta
     options.forEach(opt => {
       opt.addEventListener('click', () => checkAnswer(opt, opt.dataset.correct === 'true'));
@@ -151,7 +173,13 @@
       if (isCorrect) {
         element.classList.add('correct');
         document.getElementById('result').innerText = "✅ Correcte!";
-        let audio = new Audio("https://actions.google.com/sounds/v1/crowds/large_crowd_cheer.ogg");
+        
+        // Llançar confeti
+        launchConfetti();
+        
+        // Reproduir so aleatori
+        const randomSound = getRandomSound();
+        let audio = new Audio(randomSound);
         audio.play();
       } else {
         element.classList.add('wrong');
@@ -160,6 +188,7 @@
         audio.play();
       }
     }
+
 
     // Funció per mostrar overlay de comodí
     lifelines.forEach(btn => {
