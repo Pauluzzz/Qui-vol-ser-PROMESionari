@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qui vol ser PROMESionari?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at center, #0a0a2a, #000010);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+    }
+    .lifelines {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .lifelines button {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 3px solid #ffffff55;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .lifelines button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255,255,255,0.5);
+    }
+    .container {
+      max-width: 600px;
+      background: #111144;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+    .option {
+      display: block;
+      margin: 10px 0;
+      padding: 12px;
+      border: 2px solid #4444aa;
+      border-radius: 8px;
+      background: #222266;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .option:hover {
+      background: #333388;
+    }
+    .hidden {
+      visibility: hidden;
+    }
+    .correct {
+      background: #228822 !important;
+      border-color: #44cc44;
+    }
+    .wrong {
+      background: #882222 !important;
+      border-color: #cc4444;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    /* Overlay per mostrar la imatge gran */
+    #overlay {
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.7);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      z-index: 999;
+      display:none;
+    }
+    #overlay img {
+      max-width: 60%;
+      max-height: 60%;
+      margin-bottom: 20px;
+      border: 3px solid #fff;
+      border-radius: 10px;
+    }
+    #overlay p {
+      font-size: 1.5rem;
+      color: #fff;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ Qui vol ser PROMESionari? ✨</h1>
+
+  <!-- Botons comodins -->
+  <div class="lifelines">
+    <button class="lifeline" style="background-image: url('images/5050.png');" data-img="images/5050.png" data-text="50/50: Elimina dues opcions incorrectes" title="50/50"></button>
+    <button class="lifeline" style="background-image: url('images/public.png');" data-img="images/public.png" data-text="Ajuda del públic: El públic t’ajuda a triar" title="Ajuda del públic"></button>
+    <button class="lifeline" style="background-image: url('images/call.png');" data-img="images/call.png" data-text="Trucar a algú: Demana ajuda a un amic" title="Trucar a algú"></button>
+  </div>
+
+  <!-- Pregunta -->
+  <div class="container">
+    <h2>Quin és l’origen del “vals nupcial”, el ball més clàssic de les noces?</h2>
+    <div class="option" data-correct="false">A) Una òpera de Mozart</div>
+    <div class="option" data-correct="false">B) Una simfonia de Beethoven</div>
+    <div class="option" data-correct="true">C) L’òpera Lohengrin de Wagner</div>
+    <div class="option" data-correct="false">D) Una dansa popular francesa</div>
+    <div id="result"></div>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay">
+    <img id="overlayImg" src="" alt="Comodí">
+    <p id="overlayText"></p>
+  </div>
+
+  <script>
+    const options = document.querySelectorAll('.option');
+    const lifelines = document.querySelectorAll('.lifeline');
+    const overlay = document.getElementById('overlay');
+    const overlayImg = document.getElementById('overlayImg');
+    const overlayText = document.getElementById('overlayText');
+
+    // Funció per contestar pregunta
+    options.forEach(opt => {
+      opt.addEventListener('click', () => checkAnswer(opt, opt.dataset.correct === 'true'));
+    });
+
+    function checkAnswer(element, isCorrect) {
+      options.forEach(opt => opt.style.pointerEvents = 'none');
+      if (isCorrect) {
+        element.classList.add('correct');
+        document.getElementById('result').innerText = "✅ Correcte!";
+        let audio = new Audio("https://actions.google.com/sounds/v1/crowds/large_crowd_cheer.ogg");
+        audio.play();
+      } else {
+        element.classList.add('wrong');
+        document.getElementById('result').innerText = "❌ Incorrecte!";
+        let audio = new Audio("https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg");
+        audio.play();
+      }
+    }
+
+    // Funció per mostrar overlay de comodí
+    lifelines.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Mostrar overlay amb imatge i text
+        overlayImg.src = btn.dataset.img;
+        overlayText.textContent = btn.dataset.text;
+        overlay.style.display = 'flex';
+
+        // Desapareixen altres comodins
+        lifelines.forEach(l => {
+          if(l !== btn) l.style.display = 'none';
+        });
+
+        // Si és el 50/50, eliminar dues opcions incorrectes
+        if(btn.dataset.text.startsWith('50/50')){
+          let wrongOptions = Array.from(options).filter(opt => opt.dataset.correct === 'false' && !opt.classList.contains('hidden'));
+          wrongOptions.sort(() => Math.random() - 0.5);
+          wrongOptions.slice(0,2).forEach(opt => opt.classList.add('hidden'));
+        }
+
+        // Desapareix l’overlay després de 2 segons
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 2000);
+
+        // Desactivar el botó
+        btn.disabled = true;
+        btn.style.opacity = 0.5;
+      });
+    });
+  </script>
+</body>
+</html>
